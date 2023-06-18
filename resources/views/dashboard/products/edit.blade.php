@@ -15,11 +15,11 @@
         </div>
     @endif
 
-    <form action="{{ route('dashboard.categories.update', $category->id) }}" method="post" enctype="multipart/form-data">
+    <form action="{{ route('dashboard.products.update', $product->id) }}" method="post" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
-        @include('dashboard.categories._form', [
+        @include('dashboard.products._form', [
             'button_label' => 'Update',
         ])
 

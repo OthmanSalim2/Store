@@ -1,6 +1,9 @@
-@props(['name', 'parents', 'value'])
+@props(['name', 'parents', 'value' => '', 'label' => ''])
 
 
+@if (isset($label))
+    <label for="">{{ $label }}</label>
+@endif
 
 <select name="{{ $name }}" class="form-control form-select">
     <option value="">Primary Category</option>

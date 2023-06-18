@@ -10,6 +10,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name') }}</title>
 
+    @stack('styles')
+
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -187,7 +189,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 alt="User Image">
                         </div>
                         <div class="info">
-                            <a href="#" class="d-block">{{ Auth::user()->name }}</a>
+                            <a href="{{ route('dashboard.profile.edit') }}" class="d-block">{{ Auth::user()->name }}</a>
                             <form action="{{ route('logout') }}" method="post">
                                 @csrf
                                 <button class="btn btn-sm btn-outline-primary" type="submit">Logout</button>
@@ -267,6 +269,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- REQUIRED SCRIPTS -->
 
     <!-- jQuery -->
+
+    @stack('scripts')
+
     <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
     <!-- Bootstrap 4 -->
     <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

@@ -41,6 +41,7 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>Parent</th>
+                <th>Product #</th>
                 <th>Status</th>
                 <th>Created At</th>
                 <th colspan="2"></th>
@@ -51,8 +52,9 @@
                 <tr>
                     <td><img height="60px" src="{{ asset('storage/' . $category->image) }}" alt="" /></td>
                     <td>{{ $category->id }}</td>
-                    <td>{{ $category->name }}</td>
-                    <td>{{ $category->parent_name }}</td>
+                    <td><a href="{{ route('dashboard.categories.show', $category->id) }}">{{ $category->name }}</a></td>
+                    <td>{{ $category->parent->name }}</td>
+                    <td>{{ $category->products_count }}</td>
                     <td>{{ $category->status }}</td>
                     <td>{{ $category->created_at }}</td>
                     <td>
@@ -70,7 +72,7 @@
                     </td>
                 </tr>
             @empty
-                <td colspan="8" class="alert alert-danger" role="alert">
+                <td colspan="9" class="alert alert-danger" role="alert">
                     Cateogries Not Definded
                 </td>
             @endforelse

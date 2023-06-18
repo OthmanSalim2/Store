@@ -10,7 +10,7 @@
 @endif
 
 <input type="{{ $type }}" name="{{ $name }}"
-    {{ $attributes->class(['form-control', 'is-invalid' => $errors->has($name)]) }} value="{{ old('name', $value) }}">
+    {{ $attributes->class(['form-control', 'is-invalid' => $errors->has($name)]) }} value="{{ old($name, $value) }}" />
 @error($name)
     <div class="text-danger">
         <!-- This already defined in laravel just of error inside it and diplay the first error -->

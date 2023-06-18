@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Dashboard\CategoriesController;
 use App\Http\Controllers\Dashboard\ProductController;
+use App\Http\Controllers\Dashboard\ProfileController as DashboardProfileController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -39,6 +41,10 @@ Route::middleware(['auth'])->as('dashboard.')->prefix('dashboard')->group(
         Route::get('/', [DashboardController::class, 'index'])
             ->name('dashboard');
 
+        Route::get('profile', [DashboardProfileController::class, 'edit'])
+            ->name('profile.edit');
+        Route::patch('profile', [DashboardProfileController::class, 'update'])
+            ->name('profile.update');
 
         Route::get('categories/trash', [CategoriesController::class, 'trash'])
             ->name('categories.trash');

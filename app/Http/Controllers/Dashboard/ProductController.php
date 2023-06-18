@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -15,7 +17,10 @@ class ProductController extends Controller
     public function index()
     {
         $request = request();
-        $products = Product::filter($request->query())->paginate();
+        $products = Product::with(['category', 'store'])->filter($request->query())->paginate();
+        // SELECT * FROM products;
+        //SELECT * FROM categories WHERE id IN (...here receive category_id from products)
+        //SELECT * FROM stores WHERE id IN (...here receive store_id from products)
 
         return view('dashboard.products.index', compact('products'));
     }
@@ -47,17 +52,42 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        $products = Product::findOrFail();
+        $product = Product::findOrFail($id);
+
+        $tags = implode(',', $product->tags()->pluck('name')->toArray());
+
+        return view('dashboard.products.edit', compact('product', 'tags'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Product $product)
     {
-        //
+        $product->update($request->except('tags'));
+
+        $tags = explode(',', $request->post('tags'));
+        $tag_ids = [];
+        $tags_saved = Tag::all();
+
+        foreach ($tags as $t_name) {
+            $slug = Str::slug($t_name);
+            $tag = $tags_saved->where('slug', '=', $slug)->first();
+            if (!$tag) {
+                $tag = Tag::create([
+                    'name' => $t_name,
+                    'slug' => $slug,
+                ]);
+            }
+            $tag_ids[] = $tag->id;
+        }
+
+        $product->tags()->sync($tag_ids);
+
+        return redirect()->route('dashboard.products.index')
+            ->with('success', 'Product updated');
     }
 
     /**
