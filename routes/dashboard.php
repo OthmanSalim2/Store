@@ -5,6 +5,7 @@ use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\ProfileController as DashboardProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Middleware\CheckUserType;
 use Illuminate\Support\Facades\Route;
 
 
@@ -35,7 +36,7 @@ Route::group([
 
 */
 
-Route::middleware(['auth'])->as('dashboard.')->prefix('dashboard')->group(
+Route::middleware(['auth', 'auth.type:admin,super-admin'])->as('dashboard.')->prefix('dashboard')->group(
     function () {
 
         Route::get('/', [DashboardController::class, 'index'])

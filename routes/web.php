@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Front\CartController;
+use App\Http\Controllers\Front\HomeController;
+use App\Http\Controllers\Front\ProductsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,10 +18,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', [HomeController::class, 'index'])
+    ->name('front.home');
+
+Route::get('/product', [ProductsController::class, 'index'])
+    ->name('products.index');
+Route::get('/product/{product:slug}', [ProductsController::class, 'show'])
+    ->name('products.show');
+
+Route::post('paypal/webhook', function () {
+    echo "Welcome in my page";
 });
 
+Route::resource('cart', CartController::class);
 
 require __DIR__ . '/profile.php';
 

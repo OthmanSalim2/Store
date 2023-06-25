@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 
 class Product extends Model
@@ -19,6 +20,10 @@ class Product extends Model
         'category_id', 'store_id', 'status',
     ];
 
+    public function scopeActive(Builder $builder)
+    {
+        $builder->where('status', '=', 'active');
+    }
 
     public function category()
     {
@@ -67,5 +72,30 @@ class Product extends Model
         $builder->when($filters['status'] ?? false, function ($builder, $value) {
             $builder->where('products.status', '=', $value);
         });
+    }
+
+
+    // Accessors
+
+    public function getImageUrlAttribute()
+    {
+        if (!$this->image) {
+            return "https://www.incathlab.com/images/products/default_product.png";
+        }
+
+        if (Str::startsWith($this->image, ['http://', 'https://'])) {
+            return $this->image;
+        }
+
+        return asset('storage/' . $this->image);
+    }
+
+    public function getSalPercentAttribute()
+    {
+        if (!$this->compare_price) {
+            return 0;
+        }
+
+        return number_format(100 - (100 * $this->price / $this->compare_price), 1);
     }
 }
