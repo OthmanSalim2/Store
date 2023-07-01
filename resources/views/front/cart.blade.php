@@ -1,7 +1,9 @@
 <x-front-layout title="Cart">
 
     <!-- Start Breadcrumbs -->
-    <x-slot name='breadcrumb'>
+    {{-- <x-slot name="breadcrumb"> --}}
+    {{-- Other way  --}}
+    <x-slot:breadcrumb>
         <div class="breadcrumbs">
             <div class="container">
                 <div class="row align-items-center">
@@ -20,7 +22,7 @@
                 </div>
             </div>
         </div>
-    </x-slot>
+    </x-slot:breadcrumb>
     <!-- End Breadcrumbs -->
 
     <!-- Shopping Cart -->
@@ -53,11 +55,11 @@
                 <!-- End Cart List Title -->
                 <!-- Cart Single List list -->
                 @foreach ($cart->get() as $item)
-                    <div class="cart-single-list">
+                    <div class="cart-single-list" id="{{ $item->id }}">
                         <div class="row align-items-center">
                             <div class="col-lg-1 col-md-1 col-12">
                                 <a href="{{ route('products.show', $item->product->slug) }}"><img
-                                        src="{{ $item->product->image_url }}" alt="#"></a>
+                                        src="{{ $item->product->image_url }}" alt="#" /></a>
                             </div>
                             <div class="col-lg-4 col-md-3 col-12">
                                 <h5 class="product-name"><a href="{{ route('products.show', $item->product->slug) }}">
@@ -68,16 +70,18 @@
                                 </p>
                             </div>
                             <div class="col-lg-2 col-md-2 col-12">
-                                <input class="count-input" value="{{ $item->quantity }}">
+                                <input class="count-input item-quantity" data-id="{{ $item->id }}"
+                                    value="{{ $item->quantity }}">
                             </div>
                             <div class="col-lg-2 col-md-2 col-12">
-                                <p>{{ (float) Currency::format($item->quantity) * $item->product->price }}</p>
+                                <p>{{ Currency::format($item->quantity * $item->product->price) }}</p>
                             </div>
                             <div class="col-lg-2 col-md-2 col-12">
                                 <p>{{ Currency::format(0) }}</p>
                             </div>
                             <div class="col-lg-1 col-md-2 col-12">
-                                <a class="remove-item" href="javascript:void(0)"><i class="lni lni-close"></i></a>
+                                <a class="remove-item" data-id="{{ $item->id }}" href="javascript:void(0)"><i
+                                        class="lni lni-close"></i></a>
                             </div>
                         </div>
                     </div>
@@ -110,7 +114,7 @@
                                         <li class="last">You Pay<span>$2531.00</span></li>
                                     </ul>
                                     <div class="button">
-                                        <a href="checkout.html" class="btn">Checkout</a>
+                                        <a href="{{ route('checkout') }}" class="btn">Checkout</a>
                                         <a href="product-grids.html" class="btn btn-alt">Continue shopping</a>
                                     </div>
                                 </div>
@@ -124,5 +128,14 @@
     </div>
     <!--/ End Shopping Cart -->
 
+    @push('scripts')
+        <script>
+            const csrf_token = "{{ csrf_token() }}";
+        </script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+        <script src="{{ asset('js/cart.js') }}"></script>
+    @endpush
+
+    @vite('resources/js/cart.js');
 
 </x-front-layout>

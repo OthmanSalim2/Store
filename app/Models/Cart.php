@@ -6,12 +6,14 @@ use App\Observers\CartObserver;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Str;
+use App\Models\Product;
 
 class Cart extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     public $incrementing = false;
 
@@ -28,7 +30,7 @@ class Cart extends Model
         static::observe(CartObserver::class);
 
         static::addGlobalScope('cookie', function (Builder $builder) {
-            $builder->where('cookie_id', '=', $this->getCookieId());
+            $builder->where('cookie_id', '=', Cart::getCookieId());
         });
 
         // static::creating(function (Cart $cart) {
@@ -46,10 +48,13 @@ class Cart extends Model
 
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class, 'product_id', 'id')
+            ->withDefault([
+                'name' => 'new product'
+            ]);
     }
 
-    public function getCookieId()
+    public static function getCookieId()
     {
         $cookie_id = Cookie::get('cart_id');
 

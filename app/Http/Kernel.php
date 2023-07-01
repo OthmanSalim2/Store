@@ -22,6 +22,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
 
+
     ];
 
     /**
@@ -38,8 +39,10 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
 
+
             // must to be after start session in order to user information
             \App\Http\Middleware\UpdateUserLAstActiveAt::class,
+            \App\Http\Middleware\MarkNotificationAsRead::class,
         ],
 
         'api' => [

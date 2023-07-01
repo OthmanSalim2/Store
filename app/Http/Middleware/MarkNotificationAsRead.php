@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+class MarkNotificationAsRead
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
+    public function handle(Request $request, Closure $next): Response
+    {
+        // if ($request->has('notification_id')) {
+
+        // }
+
+        // other way
+
+        $notification_id = $request->query('notification_id');
+        if ($notification_id) {
+            $user = $request->user();
+            if ($user) {
+                $notification = $user->unreadNotifications()->find($notification_id);
+                if ($notification) {
+                    // this's to convert from unread to read notification
+                    $notification->markAsRead();
+                    // and this's to convert from read to unread notification
+                    // $notification->markAsUnread();
+                }
+            }
+        }
+        return $next($request);
+    }
+}

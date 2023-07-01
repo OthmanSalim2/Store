@@ -1,5 +1,3 @@
-<label>{{ $label ? $label : '' }}</label>
-
 <select name="{{ $name }}"
     class=" form-control form-select @error($name)
        {{ $message }}

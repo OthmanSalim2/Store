@@ -15,7 +15,7 @@ interface CartRepository
     public function add(Product $product, $quantity);
 
     // For update quantity of product in cart
-    public function update(Product $product, $quantity);
+    public function update($id, $quantity);
 
     // This is for clear all product from cart
     public function empty();
