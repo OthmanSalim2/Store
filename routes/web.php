@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Front\Auth\TwoFactorAuthenticationController;
 use App\Http\Controllers\Front\CartController;
 use App\Http\Controllers\Front\CheckoutController;
 use App\Http\Controllers\Front\HomeController;
@@ -18,6 +19,9 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::get('auth/user/2fa', [TwoFactorAuthenticationController::class, 'index'])
+    ->name('front.2fa');
 
 Route::get('/', [HomeController::class, 'index'])
     ->name('front.home');
@@ -38,6 +42,6 @@ Route::post('checkout', [CheckoutController::class, 'store']);
 
 require __DIR__ . '/profile.php';
 
-require __DIR__ . '/auth.php';
+// require __DIR__ . '/auth.php';
 
 require __DIR__ . '/dashboard.php';

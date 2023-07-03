@@ -138,7 +138,8 @@ return [
         Features::updateProfileInformation(),
         Features::updatePasswords(),
         Features::twoFactorAuthentication([
-            'confirm' => true,
+            // this's if was confirm:false mean already worked enable without I make confirm
+            'confirm' => false,
             'confirmPassword' => true,
             // 'window' => 0,
         ]),

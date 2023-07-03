@@ -35,8 +35,8 @@ Route::group([
 });
 
 */
-
-Route::middleware(['auth', 'auth.type:admin,super-admin'])->as('dashboard.')->prefix('dashboard')->group(
+// the admin in auth: this's as guard=>'admin'
+Route::middleware(['auth:admin'])->as('dashboard.')->prefix('admin/dashboard')->group(
     function () {
 
         Route::get('/', [DashboardController::class, 'index'])
