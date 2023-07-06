@@ -29,6 +29,7 @@
                                     </div>
                                     <h3>Recovery Codes</h3>
                                     <ul class="mb-3">
+                                        {{-- recoveryCodes() that is ready method to return some code possible put it instead main code from QRcode  --}}
                                         @foreach ($user->recoveryCodes() as $code)
                                             <li>{{ $code }}</li>
                                         @endforeach

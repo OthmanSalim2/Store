@@ -20,6 +20,17 @@ class Product extends Model
         'category_id', 'store_id', 'status',
     ];
 
+    // this use if make json response, will hide the fields that inside $hidden from json
+    protected $hidden = [
+        'created_at', 'updated_at', 'deleted_at'
+    ];
+
+    // for return Accessor and append for it in data in json
+    protected $appends = [
+        // for return Accessor image_url and append for it in data in json
+        'image_url',
+    ];
+
     public function scopeActive(Builder $builder)
     {
         $builder->where('status', '=', 'active');
@@ -60,17 +71,9 @@ class Product extends Model
         //     }
         // });
 
-
-    }
-
-    public function scopeFilter(Builder $builder, $filters)
-    {
-        $builder->when($filters['name'] ?? false, function ($builder, $value) {
-            $builder->where('products.name', 'LIKE', "%$value%");
-        });
-
-        $builder->when($filters['status'] ?? false, function ($builder, $value) {
-            $builder->where('products.status', '=', $value);
+        // this's event
+        static::creating(function (Product $product) {
+            $product->slug = Str::slug($product->name);
         });
     }
 
@@ -97,5 +100,53 @@ class Product extends Model
         }
 
         return number_format(100 - (100 * $this->price / $this->compare_price), 1);
+    }
+
+    public function scopeFilter(Builder $builder, $filters)
+    {
+        // array merge work override with second array if were the same key and if was there new key in array filters will added to array options
+        $options = array_merge([
+            'store_id' => null,
+            'category_id' => null,
+            'tag_id' => null,
+            'status' => 'active',
+        ], $filters);
+
+        $builder->when($options['status'], function ($query, $status) {
+            $query->where('status', $status);
+        });
+
+        $builder->when($options['store_id'], function ($builder, $value) {
+            $builder->where('store_id', $value);
+        });
+
+        $builder->when($options['category_id'], function ($builder, $value) {
+            $builder->where('category_id', $value);
+        });
+
+        $builder->when($options['tag_id'], function ($builder, $value) {
+
+
+            $builder->whereExists(function ($quey) use ($value) {
+                $quey->select(1)
+                    ->from('product_tag')
+                    ->whereRaw('product_id = products.id')
+                    ->where('tag_id', $value);
+            });
+
+            // other way
+            // $builder->whereRaw('id in (select product_id from product_tag where tag_id=?)', [$value]);
+
+            // //other way and this's best as performance and fast
+            // $builder->whereRaw('EXISTS (select 1 from product_tag where tag_id=? and product_id = products.id)', [$value]);
+
+            // other way
+            // this's will return all product that has tags regardless of tag and possible rows at tags table
+            // and has I give it relationship name in this model
+            $builder->whereHas('tags', function ($builder, $value) {
+                // here often id be tags tale id
+                $builder->where('id', $value);
+            });
+        });
     }
 }

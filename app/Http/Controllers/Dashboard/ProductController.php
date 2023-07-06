@@ -17,7 +17,7 @@ class ProductController extends Controller
     public function index()
     {
         $request = request();
-        $products = Product::with(['category', 'store'])->filter($request->query())->paginate();
+        $products = Product::with(['category', 'store'])->paginate();
         // SELECT * FROM products;
         //SELECT * FROM categories WHERE id IN (...here receive category_id from products)
         //SELECT * FROM stores WHERE id IN (...here receive store_id from products)
@@ -84,6 +84,8 @@ class ProductController extends Controller
             $tag_ids[] = $tag->id;
         }
 
+        /* sync it's use just to many to many relation, and work ids if were found in tag table don't work anything
+        but if were not found will add to tag table and if any tag not found in ids will remove this tag*/
         $product->tags()->sync($tag_ids);
 
         return redirect()->route('dashboard.products.index')
