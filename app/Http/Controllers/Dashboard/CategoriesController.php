@@ -7,6 +7,7 @@ use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -17,6 +18,15 @@ class CategoriesController extends Controller
      */
     public function index()
     {
+
+        // here say if was user authentication not with him the authorization to categories view
+        // possible other way !Gate::allows()
+        // if (Gate::denies('categories.view')) {
+        if (!Gate::allows('categories.view')) {
+            // here possible make redirect for specific route or any action
+            abort(403);
+        }
+
         $request = request();
         $query = Category::query();
 
@@ -55,6 +65,19 @@ class CategoriesController extends Controller
      */
     public function create()
     {
+
+        /* this's If you would like to attempt to authorize an action and automatically throw an AuthorizationException
+         if the user is not allowed to perform the given action and automatically return abort 403
+         */
+
+        // here There is no need to use authorize because I make it in CategoryRequest
+        // Gate::authorize('categories.create');
+
+        // other way
+        // if (Gate::denies('categories.view')) {
+        //     abort(403);
+        // }
+
         $parents = Category::all();
         $category = new Category;
         return view('dashboard.categories.create', compact('parents', 'category'));
@@ -100,6 +123,9 @@ class CategoriesController extends Controller
      */
     public function edit(string $id)
     {
+
+        // Gate::authorize('categories.update');
+
         try {
             $category = Category::findOrFail($id);
         } catch (Exception $e) {
@@ -159,6 +185,8 @@ class CategoriesController extends Controller
      */
     public function destroy(string $id)
     {
+
+        Gate::authorize('categories.delete');
 
         $category = Category::findOrFail($id);
         $category->delete();

@@ -10,7 +10,11 @@
 @section('content')
 
     <div class="mb-5">
-        <a href="{{ route('dashboard.categories.index') }}" class="btn btn-sm btn-outline-primary mr-2">Back</a>
+        {{-- here say is he can make create for category  --}}
+        @if (Auth::user()->can('categories.create'))
+            <a class="btn btn-sm btn-outline-primary mr-2" href="{{ route('dashboard.categories.create') }}">Create</a>
+        @endif
+        {{-- <a href="{{ route('dashboard.categories.index') }}" class="btn btn-sm btn-outline-primary mr-2">Back</a> --}}
         <a href="{{ route('dashboard.categories.trash') }}" class="btn btn-sm btn-outline-dark">Trash</a>
     </div>
 
@@ -29,10 +33,6 @@
         <button class="btn btn-dark">Filter</button>
 
     </form>
-
-    <div class="mb-3 ml-3">
-        <a class="btn btn-sm btn-outline-primary" href="{{ route('dashboard.categories.create') }}">Create</a>
-    </div>
 
     <table class="table">
         <thead>
@@ -59,16 +59,21 @@
                     <td>{{ $category->created_at }}</td>
                     <td>
                         {{-- <a href="{{ route('categories.edit', ['category' => $category->id]) }}"  or --}}
-                        <a href="{{ route('dashboard.categories.edit', $category->id) }}"
-                            class="btn btn-sm btn-outline-success">Edit</a>
+                        {{-- other way to is he can make edit for category --}}
+                        @can('categories.update')
+                            <a href="{{ route('dashboard.categories.edit', $category->id) }}"
+                                class="btn btn-sm btn-outline-success">Edit</a>
+                        @endcan
                     </td>
                     <td>
-                        <form action="{{ route('dashboard.categories.destroy', $category->id) }}" method="post">
-                            @csrf
-                            {{-- Form Method Spoofing  --}}
-                            @method('DELETE')
-                            <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
-                        </form>
+                        @can('categories.delete')
+                            <form action="{{ route('dashboard.categories.destroy', $category->id) }}" method="post">
+                                @csrf
+                                {{-- Form Method Spoofing  --}}
+                                @method('DELETE')
+                                <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+                            </form>
+                        @endcan
                     </td>
                 </tr>
             @empty
