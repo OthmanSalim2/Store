@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Dashboard\AdminsController;
+use App\Http\Controllers\Dashboard\ImportProductsController;
 use App\Http\Controllers\Dashboard\CategoriesController;
 use App\Http\Controllers\Dashboard\ProductController;
 use App\Http\Controllers\Dashboard\ProfileController as DashboardProfileController;
@@ -71,6 +72,10 @@ Route::middleware(['auth:admin,web'])->as('dashboard.')->prefix('admin/dashboard
         // Route::resource('products', ProductController::class);
         // Route::resource('roles', RolesController::class);
 
+        // here the arrangement import if put after product controller will consider id mean show method
+        Route::get('products/import', [ImportProductsController::class, 'create'])
+            ->name('products.import');
+        Route::post('products/import', [ImportProductsController::class, 'store']);
 
         // other way use resources() method
         // other way to identify resource controller

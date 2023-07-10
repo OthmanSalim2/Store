@@ -20,6 +20,21 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind('currency.converter', function () {
             return new CurrencyConverter(config('services.currency_converter.api-key'));
         });
+
+        // when be environment production mean on the server if was local mean on my device
+        if (App::environment('production')) {
+            // path.public represent app->make('path.public') when click ctrl+click mouse
+            $this->app->singleton('path.public', function () {
+                // here base_path return the main folder
+                // here I say go to main folder after that enter to public_html folder or path of public_html
+                return base_path('public_html');
+            });
+        }
+
+        /*
+        public_path() this method always return path of public folder,
+         possible here happen change at folder name so the best use up code direct follow App:environment
+         */
     }
 
     /**

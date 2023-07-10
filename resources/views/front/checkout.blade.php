@@ -4,6 +4,7 @@
     <x-slot name="breadcrumb">
         <div class="breadcrumbs">
             <div class="container">
+                <x-alert type='info' />
                 <div class="row align-items-center">
                     <div class="col-lg-6 col-md-6 col-12">
                         <div class="breadcrumbs-content">

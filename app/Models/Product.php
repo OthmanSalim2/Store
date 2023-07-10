@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 
 class Product extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory; // SoftDeletes;
 
 
     protected $fillable = [

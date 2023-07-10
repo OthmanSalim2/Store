@@ -3,8 +3,9 @@
 namespace App\Policies;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 
-class RolePolicy
+class UserPolicy extends ModelPolicy
 {
     /**
      * Create a new policy instance.
