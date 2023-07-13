@@ -16,16 +16,11 @@ use Throwable;
 
 class CheckoutController extends Controller
 {
-
     public function create(CartRepository $cart)
     {
-
         if ($cart->get()->count() == 0) {
-
             throw new InvalidOrderException('Cart is empty');
-            // return redirect()->route('front.home');
         }
-
         return view('front.checkout', [
             'cart' => $cart,
             'countries' => Countries::getNames(),
@@ -40,11 +35,6 @@ class CheckoutController extends Controller
             'addr.billing.email' => ['required', 'string', 'max:255'],
             'addr.billing.phone_number' => ['required', 'string', 'max:255'],
             'addr.billing.city' => ['required', 'string', 'max:255'],
-            'addr.billing.street_address' => ['required', 'string', 'max:255'],
-            'addr.billing.state' => ['required', 'string', 'max:255'],
-            'addr.billing.country' => ['required', 'string', 'max:255'],
-            'addr.billing.postal_code' => ['required', 'string', 'max:3'],
-
         ]);
 
         $items = $cart->get()->groupBy('product.store_id')->all();
@@ -52,22 +42,21 @@ class CheckoutController extends Controller
         DB::beginTransaction();
         // if happen any error at any insert(create) processing will rollback about all insert processing
         try {
-            foreach ($items as $store_id => $store_items) {
+            foreach ($items as $store_id => $cart_items) {
+
                 $order = Order::create([
                     'store_id' => $store_id,
                     'user_id' => Auth::id(),
-                    'payment_method' => 'cod'
+                    'payment_method' => 'cod',
                 ]);
 
-
-                foreach ($store_items as $item) {
+                foreach ($cart_items as $item) {
                     OrderItem::create([
                         'order_id' => $order->id,
                         'product_id' => $item->product_id,
                         'product_name' => $item->product->name,
                         'price' => $item->product->price,
                         'quantity' => $item->quantity,
-
                     ]);
                 }
 
@@ -77,16 +66,15 @@ class CheckoutController extends Controller
                 }
             }
 
-
             DB::commit();
 
-            // event('order.created', $order, Auth::user());
+            //event('order.created', $order, Auth::user());
             event(new OrderCreated($order));
         } catch (Throwable $e) {
             DB::rollBack();
             throw $e;
         }
 
-        // return redirect()->route('front.home');
+        return redirect()->route('orders.payments.create', $order->id);
     }
 }

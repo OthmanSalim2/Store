@@ -11,44 +11,60 @@ use Throwable;
 class Handler extends ExceptionHandler
 {
     /**
-     * The list of the inputs that are never flashed to the session on validation exceptions.
+     * A list of exception types with their corresponding custom log levels.
+     *
+     * @var array<class-string<\Throwable>, \Psr\Log\LogLevel::*>
+     */
+    protected $levels = [
+        //
+    ];
+
+    /**
+     * A list of the exception types that are not reported.
+     *
+     * @var array<int, class-string<\Throwable>>
+     */
+    protected $dontReport = [
+        //
+    ];
+
+    /**
+     * A list of the inputs that are never flashed to the session on validation exceptions.
      *
      * @var array<int, string>
      */
-    // here write the name of input in order to prevent passed in $request->all()
     protected $dontFlash = [
         'current_password',
         'password',
         'password_confirmation',
+        'credit_card',
     ];
 
     /**
      * Register the exception handling callbacks for the application.
+     *
+     * @return void
      */
-
-    // here if I need make handel for exception by specific way me
-    public function register(): void
+    public function register()
     {
-        // possible use to handel error in log file of laravel and possible specific my log file
-        // if I need store the message in log file by specific way me
         $this->reportable(function (QueryException $e) {
-            // Log::debug($e->getMessage()) it use for tracking thing mean possible instead of display in page I can make store in log file
-            if ($e->getCode() == 23000) {
-                //channel() for determine log channel that need work on it, and to use sql log file special me
+
+            if ($e->getCode() === '23000') {
                 Log::channel('sql')->warning($e->getMessage());
+                return false;
             }
+
+            return true;
         });
 
-        // QueryException use with foreign key, ValidationException use with handel for errors of validation process
         $this->renderable(function (QueryException $e, Request $request) {
             if ($e->getCode() == 23000) {
-                $message = 'Foreign key constraint fail entry';
+                $message = 'Foreign key constraint failed';
             } else {
                 $message = $e->getMessage();
             }
 
-            // here I expect to request return json
-            if ($request->expectsJson($message)) {
+            if ($request->expectsJson()) {
                 return response()->json([
                     'message' => $message,
                 ], 400);
@@ -56,8 +72,7 @@ class Handler extends ExceptionHandler
 
             return redirect()
                 ->back()
-                ->withInput()
-                ->withErrors([
+                ->withInput()->withErrors([
                     'message' => $e->getMessage(),
                 ])
                 ->with('info', $message);

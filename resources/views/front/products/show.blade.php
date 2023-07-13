@@ -1,5 +1,5 @@
 <x-front-layout :title="$product->name">
-    <x-slot name="breadcrumb">
+    <x-slot:breadcrumb>
         <div class="breadcrumbs">
             <div class="container">
                 <div class="row align-items-center">
@@ -11,14 +11,14 @@
                     <div class="col-lg-6 col-md-6 col-12">
                         <ul class="breadcrumb-nav">
                             <li><a href="{{ route('front.home') }}"><i class="lni lni-home"></i> Home</a></li>
-                            <li> <a href="{{ route('products.index') }}">Shop</a> </li>
-                            <li> {{ $product->name }} </li>
+                            <li><a href="{{ route('products.index') }}">Shop</a></li>
+                            <li>{{ $product->name }}</li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
-    </x-slot>
+    </x-slot:breadcrumb>
 
     <!-- Start Item Details -->
     <section class="item-details section">
@@ -54,8 +54,7 @@
                             <p class="info-text">{{ $product->description }}</p>
                             <form action="{{ route('cart.store') }}" method="post">
                                 @csrf
-                                <input type="hidden" name="product_id" value="{{ $product->id }}" />
-
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
                                 <div class="row">
                                     <div class="col-lg-4 col-md-4 col-12">
                                         <div class="form-group color-option">

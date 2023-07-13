@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\ProductsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AccessToTokensController;
+use App\Http\Controllers\Api\DeliveriesController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -38,3 +39,6 @@ Route::post('auth/access-token', [AccessToTokensController::class, 'store'])
 Route::delete('auth/access-token/{token?}', [AccessToTokensController::class, 'destroy'])
     // can't delete specific token but just can delete specific token if was authentication user
     ->middleware('auth:sanctum');
+
+Route::get('deliveries/{delivery}', [DeliveriesController::class, 'show']);
+Route::put('deliveries/{delivery}', [DeliveriesController::class, 'update']);

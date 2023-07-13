@@ -17,6 +17,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+
+
+        $this->app->bind('stripe.client', function () {
+            return new \Stripe\StripeClient(config('services.stripe.secret_key'));
+        });
+
         $this->app->bind('currency.converter', function () {
             return new CurrencyConverter(config('services.currency_converter.api-key'));
         });

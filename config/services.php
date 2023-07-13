@@ -33,6 +33,27 @@ return [
 
     'currency_converter' => [
         'api-key' => env('CURRENCY_CONVERTER_API_KEY'),
-    ]
+    ],
+
+    'stripe' => [
+        'publishable_key' => env('STRIPE_PUBLISHABLE_KEY'),
+        'secret_key' => env('STRIPE_SECRET_KEY'),
+    ],
+
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        // this's represent the link that will user go it after login process
+        'redirect' => env('APP_URL') . '/auth/google/callback',
+        'api_key' => env('API_KEY_GOOGLE'),
+    ],
+
+    'facebook' => [
+        'client_id' => env('FACEBOOK_CLIENT_ID'),
+        'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
+        // this's represent the link that will user go it after login process
+        'redirect' => env('APP_URL') . '/auth/facebook/callback',
+    ],
+
 
 ];

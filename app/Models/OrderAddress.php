@@ -13,14 +13,13 @@ class OrderAddress extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'order_id', 'type', 'first_name', 'last_name', 'email', 'phone_number', 'street_address', 'city',
-        'postal_code', 'sate', 'country'
+        'order_id', 'type', 'first_name', 'last_name', 'email', 'phone_number',
+        'street_address', 'city', 'postal_code', 'state', 'country',
     ];
 
-    // Accessor
     public function getNameAttribute()
     {
-        return $this->first_name . " " . $this->last_name;
+        return $this->first_name . ' ' . $this->last_name;
     }
 
     public function getCountryNameAttribute()
